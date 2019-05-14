@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <title>Title</title>
+        <meta name="description" content="">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" href="/assets/styles/style.css" />
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700,900|Roboto:300,400,500,700,900&amp;subset=cyrillic" rel="stylesheet">
+    </head>
+    <body>
+        <style>
+            .calculator {
+                width: 369px;
+                height: 480px;
+                margin: 0 auto;
+                border-radius: 4px;
+                position: relative;
+                box-sizing: border-box;
+                border: 1px solid #EAEDF3;
+                padding: 25px 30px 14px 30px;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04);
+            }
+            .calculator .calculator-title {
+                font-size: 16px;
+                color: #3E3F42;
+                line-height: 24px;
+                font-weight: bold;
+                font-family: 'Montserrat', sans-serif;
+            }
+            .calculator .select span {
+                display: block;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 16px;
+                color: #B7B7B7;
+                margin-bottom: 14px;
+                font-family: 'Montserrat', sans-serif;
+            }
+            .departure-city {
+                margin-top: 25px;
+            }
+            .departure-port {
+                margin-top: 18px;
+            }
+            .calculator select {
+                width: 192px;
+                height: 40px;
+                outline: none;
+                background: #FFFFFF;
+                box-sizing: border-box;
+                border: 1px solid #E2E5ED;
+                box-shadow: inset 0px 1px 2px rgba(102, 113, 123, 0.21);
+                border-radius: 4px;
+                appearance: none;
+                -webkit-appearance: none;
+                font-style: normal;
+                font-weight: bold;
+                font-size: 14px;
+                color: #9EA0A5;
+                padding-left: 16px;
+                padding-right: 30px;
+                font-family: 'Montserrat', sans-serif;
+            }
+            .calculator select.disabled {
+                opacity: 0.6;
+                pointer-events: none;
+            }
+            .calculator .select-wrapper {
+                display: inline;
+                position: relative;
+            }
+            .calculator .select-wrapper::after {
+                content: '';
+                top: 50%;
+                right: 16px;
+                width: 8px;
+                height: 6px;
+                position: absolute;
+                pointer-events: none;
+                transform: translateY(-50%) rotate(180deg);
+                background: url("/assets/images/ triangle.svg") no-repeat;
+            }
+            .total-cost {
+                left: 30px;
+                bottom: 14px;
+                width: calc(100% - 60px);
+                display: flex;
+                padding-top: 9px;
+                position: absolute;
+                align-items: center;
+                justify-content: space-between;
+                border-top: 1px solid #979797;
+            }
+            .total-cost .total-cost_text {
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                color: #3E3F42;
+                font-family: 'Roboto', sans-serif;
+            }
+            .total-cost .total-cost_value{
+                font-style: normal;
+                font-weight: bold;
+                font-size: 16px;
+                line-height: 24px;
+                text-align: right;
+                color: #3E3F42;
+                font-family: 'Montserrat', sans-serif;
+            }
+        </style>
+        <div id="calc-delivery" class="calculator">
+            <span class="calculator-title">Калькулятор доставки</span>
+            <div class="total-cost">
+                <span class="total-cost_text">Общая стоимость Суша + Море</span>
+                <span class="total-cost_value">$ 0</span>
+            </div>
+            <div class="departure-city select">
+                <span>Выберите город отправления</span>
+                <div class="select-wrapper">
+                    <select name="departure-city" id="departure-city" >
+                    </select>
+                </div>
+            </div>
+            <div class="departure-port select">
+                    <span>Выберите порт отправки</span>
+                    <div class="select-wrapper">
+                        <select name="departure-port" id="departure-port">
+                        </select>
+                    </div>
+                </div>
+        </div>
+        <script>
+            const calculatorDelivery = document.getElementById('calc-delivery');
+            const citySelect = document.getElementById('departure-city');
+            const portSelect = document.getElementById('departure-port');
+
+            window.onload = function() {
+                loadOptionToSelect();
+                setPorts(citySelect.value);
+            }
+            function loadOptionToSelect() {
+                for (let i = 0; i < citiesAndPorts.length; i += 1) {
+                    const opt = document.createElement('option');
+                    opt.appendChild(document.createTextNode(citiesAndPorts[i].City));
+                    opt.value = citiesAndPorts[i].City; 
+                    citySelect.appendChild(opt);
+                }
+            }
+            portSelect.onchange = function() {
+                setTotalCost(this.value);
+            }
+            citySelect.onchange = function() {
+                removeOptions();
+                portSelect.classList.remove('disabled');
+                setPorts(this.value);
+            }
+            function setPorts(cityName) {
+                const currentCity = citiesAndPorts.filter(item => item.City === cityName);
+                let ports = [];              
+                for (key in currentCity[0]) {
+                    if (key !== 'City' && currentCity[0][key] !== '-') {
+                        ports.push({ name: key, cost: currentCity[0][key]}); 
+                    }
+                }
+                for (let i = 0; i < ports.length; i += 1) {
+                    const opt = document.createElement('option');
+                    opt.appendChild(document.createTextNode(ports[i].name));
+                    opt.value = ports[i].cost; 
+                    portSelect.appendChild(opt);
+                }               
+                if (ports.length === 1) {
+                    portSelect.classList.add('disabled');
+                }
+                setTotalCost(ports[0].cost);
+            }
+            function removeOptions() {
+                portSelect.innerHTML = '';
+            }
+            function setTotalCost(cost) {
+                calculatorDelivery.getElementsByClassName('total-cost_value')[0].innerText = `$ ${cost}`;
+            }
+            const citiesAndPorts = [
+                {
+                    City: 'ABILENE - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1530'
+                },
+                {
+                    City: 'ALBANY - NY',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1330',
+                    TX: '-'
+                },
+                {
+                    City: 'ALBUQUERQUE - NM',
+                    SAVANNAH: '-',
+                    CA: '1795',
+                    NY: '-',
+                    TX: '1655'
+                },
+                {
+                    City: 'ALTOONA - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1430',
+                    TX: '-'
+                },
+                {
+                    City: 'AMARILLO - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1580'
+                },
+                {
+                    City: 'ANCHORAGE - AK',
+                    SAVANNAH: '-',
+                    CA: '3295',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'ANDREWS-TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1630'
+                },
+                {
+                    City: 'ANTELOPE - CA',
+                    SAVANNAH: '-',
+                    CA: '1570',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'APPLETON - WI',
+                    SAVANNAH: '1605',
+                    CA: '-',
+                    NY: '1605',
+                    TX: '-'
+                },
+                {
+                    City: 'ATLANTA EAST - GA',
+                    SAVANNAH: '1280',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'ATLANTA NORTH - GA',
+                    SAVANNAH: '1280',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'ATLANTA SOUTH - GA',
+                    SAVANNAH: '1280',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'ATLANTA WEST - GA',
+                    SAVANNAH: '1280',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'AUSTIN - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1355'
+                },
+                {
+                    City: 'BAKERSFIELD - CA',
+                    SAVANNAH: '-',
+                    CA: '1520',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'BALTIMORE - MD',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1330',
+                    TX: '-'
+                },
+                {
+                    City: 'BATON ROUGE - LA',
+                    SAVANNAH: '1455',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'BILLINGS - MT',
+                    SAVANNAH: '-',
+                    CA: '2145',
+                    NY: '1980',
+                    TX: '-'
+                },
+                {
+                    City: 'BIRMINGHAM - AL',
+                    SAVANNAH: '1380',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'BOISE - ID',
+                    SAVANNAH: '-',
+                    CA: '1845',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'CANDIA - NH',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1455',
+                    TX: '-'
+                },
+                {
+                    City: 'CARTERSVILLE - GA',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'CASPER - WY',
+                    SAVANNAH: '-',
+                    CA: '2195',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'CHAMBERSBURG - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1355',
+                    TX: '-'
+                },
+                {
+                    City: 'CHARLESTON - SC',
+                    SAVANNAH: '1280',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'CHARLESTON - WV',
+                    SAVANNAH: '1530',
+                    CA: '-',
+                    NY: '1530',
+                    TX: '-'
+                },
+                {
+                    City: 'CHICAGO NORTH - IL',
+                    SAVANNAH: '1530',
+                    CA: '-',
+                    NY: '1480',
+                    TX: '-'
+                },
+                {
+                    City: 'CHICAGO SOUTH - IL',
+                    SAVANNAH: '1530',
+                    CA: '-',
+                    NY: '1480',
+                    TX: '-'
+                },
+                {
+                    City: 'CHINA GROVE - NC',
+                    SAVANNAH: '1305',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'CLEVELAND EAST - OH',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1480',
+                    TX: '-'
+                },
+                {
+                    City: 'CLEVELAND WEST - OH',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1480',
+                    TX: '-'
+                },
+                {
+                    City: 'COLORADO SPRINGS - CO',
+                    SAVANNAH: '-',
+                    CA: '1845',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'COLUMBIA - MO',
+                    SAVANNAH: '1580',
+                    CA: '-',
+                    NY: '1600',
+                    TX: '-'
+                },
+                {
+                    City: 'COLUMBIA - SC',
+                    SAVANNAH: '1270',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'COLUMBUS - OH',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1480',
+                    TX: '-'
+                },
+                {
+                    City: 'CORPUS CHRISTI - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1455'
+                },
+                {
+                    City: 'CRASHEDTOYS EAST BETHEL - MN',
+                    SAVANNAH: '1730',
+                    CA: '-',
+                    NY: '1630',
+                    TX: '-'
+                },
+                {
+                    City: 'CRASHEDTOYS ELDRIDGE - IA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1655',
+                    TX: '-'
+                },
+                {
+                    City: 'CULPEPER - VA',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1480',
+                    TX: '-'
+                },
+                {
+                    City: 'DALLAS - TX',
+                    SAVANNAH: '1680',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1355'
+                },
+                {
+                    City: 'DALLAS SOUTH - TX',
+                    SAVANNAH: '1680',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1405'
+                },
+                {
+                    City: 'DANVILLE - VA',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1455',
+                    TX: '-'
+                },
+                {
+                    City: 'DAVENPORT - IA',
+                    SAVANNAH: '1655',
+                    CA: '-',
+                    NY: '1580',
+                    TX: '-'
+                },
+                {
+                    City: 'DAYTON - OH',
+                    SAVANNAH: '1505',
+                    CA: '-',
+                    NY: '1505',
+                    TX: '-'
+                },
+                {
+                    City: 'DENVER - CO',
+                    SAVANNAH: '-',
+                    CA: '1795',
+                    NY: '-',
+                    TX: '1630'
+                },
+                {
+                    City: 'DENVER CENTRAL - CO',
+                    SAVANNAH: '-',
+                    CA: '1795',
+                    NY: '-',
+                    TX: '1630'
+                },
+                {
+                    City: 'DENVER SOUTH - CO',
+                    SAVANNAH: '-',
+                    CA: '1795',
+                    NY: '-',
+                    TX: '1630'
+                },
+                {
+                    City: 'DES MOINES - IA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1630',
+                    TX: '-'
+                },
+                {
+                    City: 'DETROIT - MI',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1455',
+                    TX: '-'
+                },
+                {
+                    City: 'EL PASO - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1555'
+                },
+                {
+                    City: 'EUGENE - OR',
+                    SAVANNAH: '-',
+                    CA: '1795',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'EXETER - RI',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1380',
+                    TX: '-'
+                },
+                {
+                    City: 'FAYETTEVILLE - AR',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1555'
+                },
+                {
+                    City: 'FLINT - MI',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1530',
+                    TX: '-'
+                },
+                {
+                    City: 'FORT WAYNE - IN',
+                    SAVANNAH: '1630',
+                    CA: '-',
+                    NY: '1580',
+                    TX: '-'
+                },
+                {
+                    City: 'FREMONT - CA',
+                    SAVANNAH: '-',
+                    CA: '1520',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'FRESNO - CA',
+                    SAVANNAH: '-',
+                    CA: '1545',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'FT.PIERCE - FL',
+                    SAVANNAH: '1355',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'FT.WORTH - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1355'
+                },
+                {
+                    City: 'GLASSBORO EAST - NJ',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1280',
+                    TX: '-'
+                },
+                {
+                    City: 'GRAHAM - WA',
+                    SAVANNAH: '-',
+                    CA: '1795',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'GREER - SC',
+                    SAVANNAH: '1305',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'HAMMOND - IN',
+                    SAVANNAH: '1530',
+                    CA: '-',
+                    NY: '1530',
+                    TX: '-'
+                },
+                {
+                    City: 'HAMPTON - VA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1455',
+                    TX: '-'
+                },
+                {
+                    City: 'HARRISBURG - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1380',
+                    TX: '-'
+                },
+                {
+                    City: 'HARTFORD - CT',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1305',
+                    TX: '-'
+                },
+                {
+                    City: 'HAYWARD - CA',
+                    SAVANNAH: '-',
+                    CA: '1620',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'HELENA - MT',
+                    SAVANNAH: '-',
+                    CA: '2145',
+                    NY: '2280',
+                    TX: '-'
+                },
+                {
+                    City: 'HONOLULU - HI',
+                    SAVANNAH: '-',
+                    CA: '2895',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'HOUSTON - TX',
+                    SAVANNAH: '1630',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1305'
+                },
+                {
+                    City: 'INDIANAPOLIS - IN',
+                    SAVANNAH: '1505',
+                    CA: '-',
+                    NY: '1530',
+                    TX: '-'
+                },
+                {
+                    City: 'IONIA - MI',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1580',
+                    TX: '-'
+                },
+                {
+                    City: 'JACKSON - MS',
+                    SAVANNAH: '1430',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'JACKSONVILLE EAST - FL',
+                    SAVANNAH: '1230',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'JACKSONVILLE WEST - FL',
+                    SAVANNAH: '1230',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'KANSAS CITY - KS',
+                    SAVANNAH: '1555',
+                    CA: '-',
+                    NY: '1630',
+                    TX: '-'
+                },
+                {
+                    City: 'KINCHELOE - MI',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1930',
+                    TX: '-'
+                },
+                {
+                    City: 'KNOXVILLE - TN',
+                    SAVANNAH: '1405',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'LANSING - MI',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1530',
+                    TX: '-'
+                },
+                {
+                    City: 'LAS VEGAS - NV',
+                    SAVANNAH: '-',
+                    CA: '1575',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'LEXINGTON EAST - KY',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1505',
+                    TX: '1980'
+                },
+                {
+                    City: 'LEXINGTON WEST - KY',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1505',
+                    TX: '1980'
+                },
+                {
+                    City: 'LINCOLN - NE',
+                    SAVANNAH: '1705',
+                    CA: '-',
+                    NY: '1705',
+                    TX: '-'
+                },
+                {
+                    City: 'LITTLE ROCK - AR',
+                    SAVANNAH: '1505',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1530'
+                },
+                {
+                    City: 'LONG BEACH - CA',
+                    SAVANNAH: '-',
+                    CA: '1415',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'LONG ISLAND - NY',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1310',
+                    TX: '-'
+                },
+                {
+                    City: 'LONGVIEW - TX',
+                    SAVANNAH: '1630',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1430'
+                },
+                {
+                    City: 'LOS ANGELES - CA',
+                    SAVANNAH: '-',
+                    CA: '1415',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'LOUISVILLE - KY',
+                    SAVANNAH: '1505',
+                    CA: '-',
+                    NY: '1605',
+                    TX: '1980'
+                },
+                {
+                    City: 'LUFKIN - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1380'
+                },
+                {
+                    City: 'LYMAN - ME',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1480',
+                    TX: '-'
+                },
+                {
+                    City: 'MACON - GA',
+                    SAVANNAH: '1280',
+                    CA: '-',
+                    NY: '',
+                    TX: ''
+                },
+                {
+                    City: 'MADISON - WI',
+                    SAVANNAH: '1605',
+                    CA: '-',
+                    NY: '1580',
+                    TX: '-'
+                },
+                {
+                    City: 'MARTINEZ - CA',
+                    SAVANNAH: '-',
+                    CA: '1620',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'MCALLEN - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1430'
+                },
+                {
+                    City: 'MEBANE - NC',
+                    SAVANNAH: '1355',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'MEMPHIS - TN',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1605',
+                    TX: '-'
+                },
+                {
+                    City: 'MIAMI CENTRAL - FL',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'MIAMI NORTH - FL',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'MIAMI SOUTH - FL',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'MILWAUKEE - WI',
+                    SAVANNAH: '1580',
+                    CA: '-',
+                    NY: '1530',
+                    TX: '-'
+                },
+                {
+                    City: 'MINNEAPOLIS - MN',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1580',
+                    TX: '-'
+                },
+                {
+                    City: 'MINNEAPOLIS NORTH - MN',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1580',
+                    TX: '-'
+                },
+                {
+                    City: 'MOBILE - AL',
+                    SAVANNAH: '1405',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'MOCKSVILLE - NC',
+                    SAVANNAH: '1380',
+                    CA: '',
+                    NY: '',
+                    TX: ''
+                },
+                {
+                    City: 'MONTGOMERY - AL',
+                    SAVANNAH: '1430',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'NASHVILLE - TN',
+                    SAVANNAH: '1380',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'NEW ORLEANS - LA',
+                    SAVANNAH: '1455',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'NEWBURGH - NY',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1280',
+                    TX: '-'
+                },
+                {
+                    City: 'NORTH BOSTON - MA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1355',
+                    TX: '-'
+                },
+                {
+                    City: 'NORTH SEATTLE - WA',
+                    SAVANNAH: '-',
+                    CA: '1820',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'OCALA - FL',
+                    SAVANNAH: '1300',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'OGDEN- UT',
+                    SAVANNAH: '-',
+                    CA: '1745',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'OKLAHOMA CITY - OK',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1530'
+                },
+                {
+                    City: 'ORLANDO - FL',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'ORLANDO NORTH - FL',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'ORLANDO SOUTH - FL',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'PASCO - WA',
+                    SAVANNAH: '-',
+                    CA: '2020',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'PEORIA - IL',
+                    SAVANNAH: '1655',
+                    CA: '-',
+                    NY: '1580',
+                    TX: '-'
+                },
+                {
+                    City: 'PHILADELPHIA - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1270',
+                    TX: '-'
+                },
+                {
+                    City: 'PHILADELPHIA EAST',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1270',
+                    TX: '-'
+                },
+                {
+                    City: 'PHILADELPHIA EAST - SUBLOT - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1270',
+                    TX: '-'
+                },
+                {
+                    City: 'PHOENIX - AZ',
+                    SAVANNAH: '-',
+                    CA: '1570',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'PITTSBURG SOUTH - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1430',
+                    TX: '-'
+                },
+                {
+                    City: 'PITTSBURGH EAST - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1430',
+                    TX: '-'
+                },
+                {
+                    City: 'PITTSBURGH NORTH - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1430',
+                    TX: '-'
+                },
+                {
+                    City: 'PORTLAND NORTH - OR',
+                    SAVANNAH: '-',
+                    CA: '1795',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'PORTLAND SOUTH - OR',
+                    SAVANNAH: '-',
+                    CA: '1795',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'PUNTA GORDA - FL',
+                    SAVANNAH: '1355',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'RALEIGH - NC',
+                    SAVANNAH: '1305',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'RANCHO CUCAMONGA - CA',
+                    SAVANNAH: '-',
+                    CA: '1455',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'RENO - NV',
+                    SAVANNAH: '-',
+                    CA: '1720',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'RICHMOND - VA',
+                    SAVANNAH: '1430',
+                    CA: '-',
+                    NY: '1430',
+                    TX: '-'
+                },
+                {
+                    City: 'ROCHESTER - NY',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1430',
+                    TX: '-'
+                },
+                {
+                    City: 'SACRAMENTO - CA',
+                    SAVANNAH: '-',
+                    CA: '1620',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SALT LAKE CITY - UT',
+                    SAVANNAH: '-',
+                    CA: '1745',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SAN ANTONIO - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1455'
+                },
+                {
+                    City: 'SAN BERNARDINO- CA',
+                    SAVANNAH: '-',
+                    CA: '1455',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SAN DIEGO - CA',
+                    SAVANNAH: '-',
+                    CA: '1475',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SAN JOSE - CA',
+                    SAVANNAH: '-',
+                    CA: '1620',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SAVANNAH - GA',
+                    SAVANNAH: '1160',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SCRANTON - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1305',
+                    TX: '-'
+                },
+                {
+                    City: 'SEAFORD - DE',
+                    SAVANNAH: '1430',
+                    CA: '-',
+                    NY: '1405',
+                    TX: '-'
+                },
+                {
+                    City: 'SHREVEPORT - LA',
+                    SAVANNAH: '1455',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1410'
+                },
+                {
+                    City: 'SIKESTON - MO',
+                    SAVANNAH: '1580',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SO SACRAMENTO - CA',
+                    SAVANNAH: '-',
+                    CA: '1620',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SOMERVILLE - NJ',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1180',
+                    TX: '-'
+                },
+                {
+                    City: 'SOUTH BOSTON - MA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1355',
+                    TX: '-'
+                },
+                {
+                    City: 'SOUTHERN ILLINOIS - IL',
+                    SAVANNAH: '1530',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SPARTANBURG - SC',
+                    SAVANNAH: '1305',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SPOKANE - WA',
+                    SAVANNAH: '-',
+                    CA: '1995',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SPRINGFIELD - MO',
+                    SAVANNAH: '1555',
+                    CA: '-',
+                    NY: '1630',
+                    TX: '-'
+                },
+                {
+                    City: 'ST. CLOUD - MN',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1630',
+                    TX: '-'
+                },
+                {
+                    City: 'ST. LOUIS - MO',
+                    SAVANNAH: '1530',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SUN VALLEY - CA',
+                    SAVANNAH: '-',
+                    CA: '1455',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'SYRACUSE - NY',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1360',
+                    TX: '-'
+                },
+                {
+                    City: 'TALLAHASSEE - FL',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'TAMPA SOUTH - FL',
+                    SAVANNAH: '1330',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'TANNER - AL',
+                    SAVANNAH: '1430',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'TIFTON - GA',
+                    SAVANNAH: '1305',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'TORONTO CANADA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'TRENTON - NJ',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1180',
+                    TX: '-'
+                },
+                {
+                    City: 'TUCSON - AZ',
+                    SAVANNAH: '-',
+                    CA: '1645',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'TULSA - OK',
+                    SAVANNAH: '1630',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1555'
+                },
+                {
+                    City: 'VALLEJO - CA',
+                    SAVANNAH: '-',
+                    CA: '1620',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'VAN NUYS - CA',
+                    SAVANNAH: '-',
+                    CA: '1425',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'WACO - TX',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '-',
+                    TX: '1530'
+                },
+                {
+                    City: 'WALTON - KY',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1565',
+                    TX: '1980'
+                },
+                {
+                    City: 'WASHINGTON DC - MD',
+                    SAVANNAH: '1480',
+                    CA: '-',
+                    NY: '1330',
+                    TX: '-'
+                },
+                {
+                    City: 'WEBSTER - NH',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1480',
+                    TX: '-'
+                },
+                {
+                    City: 'WEST PALM BEACH - FL',
+                    SAVANNAH: '1355',
+                    CA: '-',
+                    NY: '-',
+                    TX: '-'
+                },
+                {
+                    City: 'WEST WARREN - MA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1330',
+                    TX: '-'
+                },
+                {
+                    City: 'WHEELING - IL',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1455',
+                    TX: '-'
+                },
+                {
+                    City: 'WICHITA - KS',
+                    SAVANNAH: '1630',
+                    CA: '-',
+                    NY: '1680',
+                    TX: '1655'
+                },
+                {
+                    City: 'YORK HAVEN - PA',
+                    SAVANNAH: '-',
+                    CA: '-',
+                    NY: '1380',
+                    TX: '-'
+                },
+                ];
+        </script>
+    </body>
+</html>
