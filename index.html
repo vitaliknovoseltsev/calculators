@@ -294,8 +294,8 @@
                 }
                 function calcTotalCost(val) {
                     const finalBat = val;
-                    const auctionFee = getFeeAmount(finalBat) + getBetInRealTime(finalBat);
-                    const totalCost = portOdessa + griznes + constant + auctionFee;  
+                    const auctionFee = getFeeAmount(finalBat) + getBetInRealTime(finalBat) + constant;
+                    const totalCost = portOdessa + griznes + auctionFee;  
                     updateInfo(auctionFee, totalCost);  
                 }
                 finalBetInput.onkeypress = function(event) {
