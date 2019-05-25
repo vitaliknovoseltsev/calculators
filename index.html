@@ -7,12 +7,14 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <link rel="stylesheet" href="/assets/styles/style.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
         <div>
             <a href="/calculators/calculator-cost.html">Калькулятор конечной стоимости лота</a>
             <a href="/calculators/calculator-delivery.html">Калькулятор доставки</a>
         </div>
+        <!-- Начало копирования -->
         <style>
             .calculators {
                 display: flex;
@@ -220,6 +222,122 @@
                 color: #3E3F42;
                 font-family: 'Montserrat', sans-serif;
             }
+            .calculator .calculator-row {
+                display: flex;
+                margin-top: 19px;
+            }
+            .calculator .calculator-row .motor-size, 
+            .calculator .calculator-row .type-of-motor,
+            .calculator .calculator-row .car-cost,
+            .calculator .calculator-row .date-create {
+                width: 50%;
+            }
+            .calculator .calculator-row .column-title {
+                color: #B7B7B7 !important;
+                font-size: 14px !important;
+                display: block;
+                margin-bottom: 9px !important;
+                font-style: normal;
+                font-weight: normal !important;
+                padding-left: 0px !important;
+                cursor: default !important;
+                font-family: 'Montserrat', sans-serif;
+            }
+            .calculator .calculator-row .column-title:after,
+            .calculator .calculator-row .column-title:before {
+                display: none;
+            }
+            .calculator .calculator-row .type-of-motor span {
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                display: block;
+                color: #000000;
+                margin-bottom: 6px;
+                padding-left: 40px;
+                position: relative;
+                cursor: pointer;
+                font-family: 'Montserrat', sans-serif;
+            }
+            .calculator .calculator-row .type-of-motor span:after {
+                content: '';
+                top: 50%;
+                left: 0px;
+                width: 16px;
+                height: 16px;
+                position: absolute;
+                border-radius: 50%;
+                transform: translateY(-50%);
+                border: 1px solid #979797;
+            }
+            .calculator .calculator-row .type-of-motor span.active:before {
+                content: '';
+                top: 50%;
+                left: 4px;
+                width: 10px;
+                height: 10px;
+                position: absolute;
+                border-radius: 50%;
+                transform: translateY(-50%);
+                background: #249AF3;
+            }
+            #calc-сustoms select {
+                width: 130px;
+            }
+            #calc-сustoms .calculator-row:first-child {
+                margin-top: 25px;
+            }
+            .calculator .calculator-row input {
+                width: 130px;
+                height: 40px;
+                outline: none;
+                border: 1px solid #E2E5ED;
+                box-sizing: border-box;
+                box-shadow: inset 0px 1px 2px rgba(102, 113, 123, 0.21);
+                border-radius: 4px;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                color: #9EA0A5;
+                padding-left: 16px;
+                pointer-events: none;
+            }
+            .calculator .calculator-row #for-electro input{
+                pointer-events: auto;
+            }
+            .calculator .calculator-row.hide {
+                display: none;
+            }
+            #ageRatio,
+            #currentExchange {
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 17px;
+                color: #000000;
+                display: block;
+                margin-top: 10px;
+                font-family: 'Montserrat', sans-serif;
+            }
+            #calculate {
+                width: 100%;
+                height: 40px;
+                border: none;
+                background: #249AF3;
+                border-radius: 5px;
+                font-style: normal;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: bold;
+                font-size: 14px;
+                margin-top: 27px;
+                text-align: center;
+                color: #FFFFFF;
+                outline: none;
+                cursor: pointer;
+            }
+            .hidden {
+                display: none;
+            }
             </style>
         <div class="calculators">
             <div id="calc-cost" class="calculator">
@@ -277,7 +395,191 @@
                         </div>
                     </div>
             </div>
+            <div id="calc-сustoms" class="calculator">
+                <span class="calculator-title">Таможенный калькулятор</span>
+                <div class="total-cost">
+                    <span class="total-cost_text">Общая стоимость</span>
+                    <span class="total-cost_value">$ 0</span>
+                </div>
+                <div class="calculator-row">
+                    <div class="type-of-motor">
+                        <span class="column-title">Тип двигателя</span>
+                        <span class="motor-type active" id="gasoline">Бензин</span>
+                        <span class="motor-type" id="diesel">Дизель</span>
+                        <span class="motor-type" id="electro">Электро</span>
+                    </div>
+                    <div class="motor-size">
+                        <div id="for-classic">
+                            <span class="column-title">Обьем двигателя</span>
+                            <div class="select-wrapper">
+                                <select name="motor-size" id="motor-size" >
+                                </select>
+                            </div>
+                        </div>
+                        <div id="for-electro" class="hidden">
+                            <span class="column-title">Мощность двигателя (кВт)</span>
+                            <input type="text" name="electro-size" id="electro-size" />
+                        </div>
+                    </div>
+                </div>
+                <div class="calculator-row" id="second-row">
+                    <div class="date-create">
+                        <span class="column-title">Год выпуска</span>
+                        <div class="select-wrapper">
+                            <select name="date-create" id="date-create" >
+                            </select>
+                        </div>
+                        <span id="ageRatio">Коеффициент возраста - 1</span>
+                    </div>
+                    <div class="car-cost">
+                        <span class="column-title">Стоимость Авто</span>
+                        <input type="text" name="car-cost" id="car-cost" value="1"/>
+                        <span id="currentExchange"></span>
+                    </div>
+                </div>
+                <button id="calculate">Расчитать</button>
+            </div>
         </div>
+        <script>
+            const calcCustoms = document.getElementById('calc-сustoms');
+            const motorSizesSelect = document.getElementById('motor-size');
+            const datesCreateSelect = document.getElementById('date-create');
+            const ageRatioElem = document.getElementById('ageRatio');
+            const carCostElem = document.getElementById('car-cost');
+            const motorTypes = document.getElementsByClassName('motor-type');
+            const calcBtn = document.getElementById('calculate');
+            const electroSizeElem = document.getElementById('electro-size');
+            let isElectro = false;
+            let EurToUsd;
+            let cubeRatio = 50;
+            let ageRatioVal = 1;
+            let carCost = 0;
+            let allCustomCost = 0;
+
+            for (let i = 0; i < motorTypes.length; i += 1) {
+                motorTypes[i].addEventListener('click', setMotorType);
+            }
+
+            function setMotorType() {
+                removeActiveMotorTypes();
+                this.classList.add('active');
+                if (this.id === 'gasoline') {
+                    cubeRatio = 50;
+                } else if (this.id === 'diesel') {
+                    cubeRatio = 75;
+                } else {
+                    isElectro = true;
+                    document.getElementById('second-row').classList.add('hide');
+                    document.getElementById('for-electro').classList.remove('hidden');
+                    document.getElementById('for-classic').classList.add('hidden');
+                }
+            }
+            
+            function removeActiveMotorTypes() {
+                isElectro = false;
+                document.getElementById('second-row').classList.remove('hide');
+                document.getElementById('for-electro').classList.add('hidden');
+                document.getElementById('for-classic').classList.remove('hidden');
+                for (let i = 0; i < motorTypes.length; i += 1) {
+                    motorTypes[i].classList.remove('active');
+                }
+            }
+            function setCarCost(val) {
+                carCost = val + 400;
+                carCostElem.value = `${carCost} $`;
+            }
+            function setAgeRatio(value) {
+                ageRatioVal = value;
+                ageRatioElem.innerText = `Коеффициент возраста - ${ageRatioVal}`;
+            }
+            function loadMotorSizes() {
+                let i = 1;
+                while(i < 10.1) {
+                    const opt = document.createElement('option');
+                    opt.appendChild(document.createTextNode(`${i} л`));
+                    opt.value = i; 
+                    motorSizesSelect.appendChild(opt);
+                    i = (i * 10 + 1) / 10;
+                }
+            }
+            function loadDatesCreate() {
+                const currentYear = new Date().getFullYear();
+                for (let i = 0; i < 21; i += 1) {
+                    const opt = document.createElement('option');
+                    const year = currentYear - i;
+                    opt.appendChild(document.createTextNode(year));
+                    opt.value = year; 
+                    datesCreateSelect.appendChild(opt);
+                }
+            }
+            function calcAgeRatio(year) {
+                let coef;
+                const currentYear = new Date().getFullYear();
+                if (year <= currentYear && year >= currentYear - 2) {
+                    coef = 1;
+                } else {
+                    coef = currentYear - year - 1;
+                }
+                return (coef > 15) ? 15 : coef;
+            }
+            datesCreateSelect.onchange = function() {
+                setAgeRatio(calcAgeRatio(this.value));
+            }
+            function getExchangeRates() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://api.exchangeratesapi.io/latest', false);
+                xhr.send();
+                if (xhr.status != 200) {  
+                    alert( xhr.status + ': ' + xhr.statusText );
+                } else {
+                    const data = JSON.parse(xhr.responseText);
+                    EurToUsd = data.rates.USD;
+                }
+            }
+            function getUAExchange() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5', false);
+                xhr.send();
+                if (xhr.status != 200) {  
+                    alert( xhr.status + ': ' + xhr.statusText );
+                } else {
+                    const data = JSON.parse(xhr.responseText);
+                    document.getElementById('currentExchange').innerHTML 
+                    = `Курс на ${getDateInFormat()} - <b>${parseFloat(data[0].buy).toFixed(2)}</b>`;
+                }
+                function getDateInFormat() {
+                    const todayDate = new Date();
+                    const month = ((todayDate.getMonth() + 1) < 10)
+                    ? `0${(todayDate.getMonth() + 1)}`
+                    : (todayDate.getMonth() + 1);
+                    return `${todayDate.getDate()}.${month}.${todayDate.getFullYear()}`;
+                }
+            }
+            calcBtn.onclick = function() {
+                let allCost;
+                if (!isElectro) {
+                    const duty = carCostElem.value.slice(0, -1) * 0.1;
+                    const excise = (cubeRatio * EurToUsd) * motorSizesSelect.value * ageRatioVal;
+                    const vat = (Number(carCostElem.value.slice(0, -1)) + duty + excise) * 0.2;
+                    allCost = duty + excise + vat;
+                } else {
+                    allCost = electroSizeElem.value * 1.0 * EurToUsd;
+                }
+                setAllCost(allCost);
+            }
+            electroSizeElem.onkeypress = function(event) {
+                validate(event);
+            }
+            electroSizeElem.onkeyup = function(event) {
+                if (event.target.value < 1) {
+                    event.target.value = 1;
+                }
+            }
+            function setAllCost(val) {
+                allCustomCost = val;
+                calcCustoms.getElementsByClassName('total-cost_value')[0].innerText = `$ ${Math.round(allCustomCost)}`;
+            }
+        </script>
         <script>
                 const calculatorCost = document.getElementById('calc-cost');
                 const finalBetInput = document.getElementById('final-bet');
@@ -288,7 +590,13 @@
                     calcTotalCost(0);
                     loadOptionToSelect();
                     setPorts(citySelect.value);
+                    loadMotorSizes();
+                    loadDatesCreate();
+                    getExchangeRates();
+                    getUAExchange();
                 }
+            
+ 
                 finalBetInput.onkeyup = function() {
                     calcTotalCost(this.value);        
                 }
@@ -296,7 +604,8 @@
                     const finalBat = val;
                     const auctionFee = getFeeAmount(finalBat) + getBetInRealTime(finalBat) + constant;
                     const totalCost = portOdessa + griznes + auctionFee;  
-                    updateInfo(auctionFee, totalCost);  
+                    updateInfo(auctionFee, totalCost);
+                    setCarCost(totalCost);  
                 }
                 finalBetInput.onkeypress = function(event) {
                     validate(event);
@@ -1814,5 +2123,6 @@
                     },
                     ];
             </script>
+        <!-- Конец копирования -->
     </body>
 </html>
