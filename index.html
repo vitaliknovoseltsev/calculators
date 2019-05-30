@@ -66,11 +66,11 @@
                 height: 38px;
                 outline: none;
                 font-size: 14px;
-                color: #9EA0A5;
+                color: #000;
                 font-weight: bold;
                 padding-left: 16px;
                 border-radius: 4px;
-                border: 1px solid #E2E5ED;
+                border: 1px solid #000;
                 font-family: 'Montserrat', sans-serif;
                 box-shadow: inset 0px 1px 2px rgba(102, 113, 123, 0.21);
             }
@@ -96,7 +96,7 @@
             }
             .extra-charges .extra-charges_item .extra-charges_item__cost {
                 text-align: right;
-                color: #9EA0A5;
+                color: #000;
                 font-style: normal;
                 font-weight: bold;
                 font-size: 14px;
@@ -164,7 +164,7 @@
                 outline: none;
                 background: #FFFFFF;
                 box-sizing: border-box;
-                border: 1px solid #E2E5ED;
+                border: 1px solid #000;
                 box-shadow: inset 0px 1px 2px rgba(102, 113, 123, 0.21);
                 border-radius: 4px;
                 appearance: none;
@@ -172,7 +172,7 @@
                 font-style: normal;
                 font-weight: bold;
                 font-size: 14px;
-                color: #9EA0A5;
+                color: #000;
                 padding-left: 16px;
                 padding-right: 30px;
                 font-family: 'Montserrat', sans-serif;
@@ -180,6 +180,8 @@
             .calculator select.disabled {
                 opacity: 0.6;
                 pointer-events: none;
+                color: #9EA0A5;
+                border: 1px solid #9EA0A5;
             }
             .calculator .select-wrapper {
                 display: inline;
@@ -190,11 +192,11 @@
                 top: 50%;
                 right: 16px;
                 width: 8px;
-                height: 6px;
+                height: 12px;
                 position: absolute;
                 pointer-events: none;
-                transform: translateY(-50%) rotate(180deg);
-                background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOSIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgOSA5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik00LjE3MTg4IDBMOC4zNDM0NSA0LjE3MTU3TDAuMDAwMzAyMDYzIDQuMTcxNTdMNC4xNzE4OCAwWiIgZmlsbD0iI0M0QzRDNCIvPjwvc3ZnPg==) no-repeat;
+                transform: translateY(-50%);
+                background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOSIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgOSA5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik00LjE3MTM5IDguMzQzMTRMLTAuMDAwMTg2MjE4IDQuMTcxNTdMOC4zNDI5NiA0LjE3MTU3TDQuMTcxMzkgOC4zNDMxNFoiIGZpbGw9ImJsYWNrIi8+PC9zdmc+) no-repeat;
             }
             .total-cost {
                 left: 30px;
@@ -294,16 +296,15 @@
                 width: 130px;
                 height: 40px;
                 outline: none;
-                border: 1px solid #E2E5ED;
+                border: 1px solid #000;
                 box-sizing: border-box;
                 box-shadow: inset 0px 1px 2px rgba(102, 113, 123, 0.21);
                 border-radius: 4px;
                 font-style: normal;
                 font-weight: 500;
                 font-size: 14px;
-                color: #9EA0A5;
+                color: #000;
                 padding-left: 16px;
-                pointer-events: none;
             }
             .calculator .calculator-row #for-electro input{
                 pointer-events: auto;
@@ -342,6 +343,81 @@
             .hidden {
                 display: none;
             }
+            #all-cost {
+                display: flex;
+                padding: 30px;
+                margin: 30px auto;
+                max-width: 1170px;
+                justify-content: space-between;
+                height: 114px;
+                background: #FFFFFF;
+                border: 1px solid #EAEDF3;
+                box-sizing: border-box;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.04);
+                border-radius: 4px;
+            }
+            #all-cost .all-cost_title span:first-child {
+                display: block;
+                font-family: 'Montserrat', sans-serif;
+                font-style: normal;
+                font-weight: bold;
+                font-size: 24px;
+                line-height: 24px;
+                color: #3E3F42;
+            }
+            #all-cost .all-cost_title span:last-child {
+                display: block;
+                margin-top: 10px;
+                font-family: 'Montserrat', sans-serif;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 15px;
+                color: #B7B7B7;
+            }
+            #main-cost {
+                font-family: 'Montserrat', sans-serif;
+                font-style: normal;
+                font-weight: bold;
+                font-size: 24px;
+                line-height: 24px;
+                text-align: right;
+                color: #3E3F42;
+            }
+            @media (max-width: 1200px) {
+                .calculators {
+                    align-items: center;
+                    flex-direction: column;
+                }
+                .calculators .calculator {
+                    margin-bottom: 30px;
+                }
+                .calculators .calculator:last-child {
+                    margin-bottom: 0px;
+                }
+            }
+            @media (max-width: 540px) {
+                #all-cost {
+                    height: auto;
+                    flex-direction: column;
+                }
+                #main-cost {
+                    text-align: left;
+                    margin-top: 20px;
+                }
+            }
+            @media (max-width: 440px) {
+                .calculators .calculator {
+                    margin-left: 0px;
+                    margin-right: 0px;
+                    padding: 25px 15px 14px 15px
+                }
+            }
+            @media (max-width: 380px) {
+                .calculators .calculator {
+                    width: 100%;
+                }
+            }
             </style>
         <div class="calculators">
             <div id="calc-cost" class="calculator">
@@ -368,7 +444,7 @@
                         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBpZD0iSWNvbnMvU29saWQvU2hpcHBpbmciPjxwYXRoIGlkPSJTaGlwcGluZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNS4yIDEwLjMxODhIMTUuNkMxNS44MiAxMC4zMTg4IDE2IDEwLjQ4MTkgMTYgMTAuNjgxM1YxMS40MDYzQzE2IDExLjYwNTYgMTUuODIgMTEuNzY4OCAxNS42IDExLjc2ODhIMTQuNEMxNC40IDEyLjk2OTUgMTMuMzI1IDEzLjk0MzggMTIgMTMuOTQzOEMxMC42NzUgMTMuOTQzOCA5LjYgMTIuOTY5NSA5LjYgMTEuNzY4OEg2LjRDNi40IDEyLjk2OTUgNS4zMjUgMTMuOTQzOCA0IDEzLjk0MzhDMi42NzUgMTMuOTQzOCAxLjYgMTIuOTY5NSAxLjYgMTEuNzY4OFY4Ljg2ODc2SDUuNEM1LjUxIDguODY4NzYgNS42IDguNzg3MTkgNS42IDguNjg3NTFWOC4zMjUwMUM1LjYgOC4yMjUzMiA1LjUxIDguMTQzNzYgNS40IDguMTQzNzZIMC4yQzAuMDkgOC4xNDM3NiAwIDguMDYyMTkgMCA3Ljk2MjUxVjcuNjAwMDFDMCA3LjUwMDMyIDAuMDkgNy40MTg3NiAwLjIgNy40MTg3Nkg2LjJDNi4zMSA3LjQxODc2IDYuNCA3LjMzNzE5IDYuNCA3LjIzNzUxVjYuODc1MDFDNi40IDYuNzc1MzIgNi4zMSA2LjY5Mzc2IDYuMiA2LjY5Mzc2SDFDMC44OSA2LjY5Mzc2IDAuOCA2LjYxMjE5IDAuOCA2LjUxMjVWNi4xNUMwLjggNi4wNTAzMiAwLjg5IDUuOTY4NzUgMSA1Ljk2ODc1SDdDNy4xMSA1Ljk2ODc1IDcuMiA1Ljg4NzE5IDcuMiA1Ljc4NzVWNS40MjVDNy4yIDUuMzI1MzIgNy4xMSA1LjI0Mzc1IDcgNS4yNDM3NUgwLjJDMC4wOSA1LjI0Mzc1IDAgNS4xNjIxOSAwIDUuMDYyNVY0LjdDMCA0LjYwMDMxIDAuMDkgNC41MTg3NSAwLjIgNC41MTg3NUgxLjZWMy40MzEyNUMxLjYgMi44MzA4NiAyLjEzNzUgMi4zNDM3NSAyLjggMi4zNDM3NUg5LjJDOS44NjI1IDIuMzQzNzUgMTAuNCAyLjgzMDg2IDEwLjQgMy40MzEyNVY0LjUxODc1SDExLjUwMjVDMTEuODIgNC41MTg3NSAxMi4xMjUgNC42MzQzIDEyLjM1IDQuODM4MjFMMTQuODQ3NSA3LjEwMTU3QzE1LjA3MjUgNy4zMDU0NyAxNS4yIDcuNTgxODggMTUuMiA3Ljg2OTYyVjEwLjMxODhaTTIuOCAxMS43Njg4QzIuOCAxMi4zNjkyIDMuMzM3NSAxMi44NTYzIDQgMTIuODU2M0M0LjY2MjUgMTIuODU2MyA1LjIgMTIuMzY5MiA1LjIgMTEuNzY4OEM1LjIgMTEuMTY4NCA0LjY2MjUgMTAuNjgxMyA0IDEwLjY4MTNDMy4zMzc1IDEwLjY4MTMgMi44IDExLjE2ODQgMi44IDExLjc2ODhaTTEyIDEyLjg1NjNDMTEuMzM3NSAxMi44NTYzIDEwLjggMTIuMzY5MiAxMC44IDExLjc2ODhDMTAuOCAxMS4xNjg0IDExLjMzNzUgMTAuNjgxMyAxMiAxMC42ODEzQzEyLjY2MjUgMTAuNjgxMyAxMy4yIDExLjE2ODQgMTMuMiAxMS43Njg4QzEzLjIgMTIuMzY5MiAxMi42NjI1IDEyLjg1NjMgMTIgMTIuODU2M1pNMTAuNCA4LjE0Mzc1SDE0VjcuODY5NjFMMTEuNTAyNSA1LjYwNjI1SDEwLjRWOC4xNDM3NVoiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAuMDEiLz48bWFzayBpZD0ibWFzazAiIG1hc2stdHlwZT0iYWxwaGEiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjAiIHk9IjIiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxMiI+PHBhdGggaWQ9IlNoaXBwaW5nXzIiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTUuMiAxMC4zMTg4SDE1LjZDMTUuODIgMTAuMzE4OCAxNiAxMC40ODE5IDE2IDEwLjY4MTNWMTEuNDA2M0MxNiAxMS42MDU2IDE1LjgyIDExLjc2ODggMTUuNiAxMS43Njg4SDE0LjRDMTQuNCAxMi45Njk1IDEzLjMyNSAxMy45NDM4IDEyIDEzLjk0MzhDMTAuNjc1IDEzLjk0MzggOS42IDEyLjk2OTUgOS42IDExLjc2ODhINi40QzYuNCAxMi45Njk1IDUuMzI1IDEzLjk0MzggNCAxMy45NDM4QzIuNjc1IDEzLjk0MzggMS42IDEyLjk2OTUgMS42IDExLjc2ODhWOC44Njg3Nkg1LjRDNS41MSA4Ljg2ODc2IDUuNiA4Ljc4NzE5IDUuNiA4LjY4NzUxVjguMzI1MDFDNS42IDguMjI1MzIgNS41MSA4LjE0Mzc2IDUuNCA4LjE0Mzc2SDAuMkMwLjA5IDguMTQzNzYgMCA4LjA2MjE5IDAgNy45NjI1MVY3LjYwMDAxQzAgNy41MDAzMiAwLjA5IDcuNDE4NzYgMC4yIDcuNDE4NzZINi4yQzYuMzEgNy40MTg3NiA2LjQgNy4zMzcxOSA2LjQgNy4yMzc1MVY2Ljg3NTAxQzYuNCA2Ljc3NTMyIDYuMzEgNi42OTM3NiA2LjIgNi42OTM3NkgxQzAuODkgNi42OTM3NiAwLjggNi42MTIxOSAwLjggNi41MTI1VjYuMTVDMC44IDYuMDUwMzIgMC44OSA1Ljk2ODc1IDEgNS45Njg3NUg3QzcuMTEgNS45Njg3NSA3LjIgNS44ODcxOSA3LjIgNS43ODc1VjUuNDI1QzcuMiA1LjMyNTMyIDcuMTEgNS4yNDM3NSA3IDUuMjQzNzVIMC4yQzAuMDkgNS4yNDM3NSAwIDUuMTYyMTkgMCA1LjA2MjVWNC43QzAgNC42MDAzMSAwLjA5IDQuNTE4NzUgMC4yIDQuNTE4NzVIMS42VjMuNDMxMjVDMS42IDIuODMwODYgMi4xMzc1IDIuMzQzNzUgMi44IDIuMzQzNzVIOS4yQzkuODYyNSAyLjM0Mzc1IDEwLjQgMi44MzA4NiAxMC40IDMuNDMxMjVWNC41MTg3NUgxMS41MDI1QzExLjgyIDQuNTE4NzUgMTIuMTI1IDQuNjM0MyAxMi4zNSA0LjgzODIxTDE0Ljg0NzUgNy4xMDE1N0MxNS4wNzI1IDcuMzA1NDcgMTUuMiA3LjU4MTg4IDE1LjIgNy44Njk2MlYxMC4zMTg4Wk0yLjggMTEuNzY4OEMyLjggMTIuMzY5MiAzLjMzNzUgMTIuODU2MyA0IDEyLjg1NjNDNC42NjI1IDEyLjg1NjMgNS4yIDEyLjM2OTIgNS4yIDExLjc2ODhDNS4yIDExLjE2ODQgNC42NjI1IDEwLjY4MTMgNCAxMC42ODEzQzMuMzM3NSAxMC42ODEzIDIuOCAxMS4xNjg0IDIuOCAxMS43Njg4Wk0xMiAxMi44NTYzQzExLjMzNzUgMTIuODU2MyAxMC44IDEyLjM2OTIgMTAuOCAxMS43Njg4QzEwLjggMTEuMTY4NCAxMS4zMzc1IDEwLjY4MTMgMTIgMTAuNjgxM0MxMi42NjI1IDEwLjY4MTMgMTMuMiAxMS4xNjg0IDEzLjIgMTEuNzY4OEMxMy4yIDEyLjM2OTIgMTIuNjYyNSAxMi44NTYzIDEyIDEyLjg1NjNaTTEwLjQgOC4xNDM3NUgxNFY3Ljg2OTYxTDExLjUwMjUgNS42MDYyNUgxMC40VjguMTQzNzVaIiBmaWxsPSJ3aGl0ZSIvPjwvbWFzaz48ZyBtYXNrPSJ1cmwoI21hc2swKSI+PGcgaWQ9IiYjMjI2OyYjMTM0OyYjMTc5OyAmIzI0MDsmIzE1OTsmIzE0MjsmIzE2ODsgQ2hhbmdlIENvbG9yIj48cmVjdCBpZD0iUmVjdGFuZ2xlIiB5PSIwLjUzMTI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMTQuNSIgZmlsbD0iIzI0OUFGMyIvPjwvZz48L2c+PC9nPjwvc3ZnPg==" alt="" class="extra-charges_item__icon" />
                         <div class="port">
                             <span class="extra-charges_item__name">Порт Одесса</span>
-                            <span class="extra-charges_item__description">(Экспедирование, Брокер, Стоянка)</span>
+                            <span class="extra-charges_item__description">(Экспедирование и Брокер)</span>
                         </div>
                         <span class="extra-charges_item__cost">$ 900</span>
                     </div>
@@ -451,6 +527,13 @@
                 <button id="calculate">Расчитать</button>
             </div>
         </div>
+        <div id="all-cost">
+            <div class="all-cost_title">
+                <span>Всего, цена с доставкой</span>
+                <span>* Без учета растаможки</span>
+            </div>
+            <span id="main-cost">$ 6 000</span>
+        </div>
         <script>
             const calcCustoms = document.getElementById('calc-сustoms');
             const motorSizesSelect = document.getElementById('motor-size');
@@ -466,6 +549,31 @@
             let ageRatioVal = 1;
             let carCost = 0;
             let allCustomCost = 0;
+
+            function calcMainCost() {
+                const mainCost = Number(costCalc1) + Number(deliveryCost);
+                document.getElementById('main-cost').innerHTML = `$ ${mainCost}`;
+            }
+
+            carCostElem.onkeypress = function(event) {
+                validate(event);
+                console.log(this.value.slice(-1)); 
+                this.value = this.value.replace(/\s/g, '');               
+                if (this.value.slice(-1) === '$') {
+                    this.value = this.value.substring(0, this.value.length - 1);
+                }
+            }
+            carCostElem.onkeyup = function() {
+                var key = event.keyCode || event.charCode;
+                if( key == 8 || key == 46 ) {
+                    return false;
+                } else {
+                    this.value = this.value.replace(/\s/g, '');               
+                    if (this.value.slice(-1) !== '$') {
+                        this.value = `${this.value} $`;                                   
+                    }
+                }
+            }
 
             for (let i = 0; i < motorTypes.length; i += 1) {
                 motorTypes[i].addEventListener('click', setMotorType);
@@ -597,6 +705,7 @@
                 const portOdessa = 900;
                 const griznes = 1000;
                 const constant = 59;
+                let costCalc1 = 0;
                 window.onload = function() {
                     calcTotalCost(0);
                     loadOptionToSelect();
@@ -614,16 +723,18 @@
                 function calcTotalCost(val) {
                     const finalBat = val;
                     const auctionFee = getFeeAmount(finalBat) + getBetInRealTime(finalBat) + constant;
-                    const totalCost = portOdessa + griznes + auctionFee;  
+                    const totalCost = portOdessa + griznes + auctionFee;
+                    costCalc1 = totalCost;
                     updateInfo(auctionFee, totalCost);
-                    setCarCost(totalCost);  
+                    setCarCost(totalCost);
+                    calcMainCost(); 
                 }
                 finalBetInput.onkeypress = function(event) {
                     validate(event);
                 }
                 function updateInfo(auctionFee, totalCost) {
                     calculatorCost.getElementsByClassName('auction')[0].innerText = `$ ${auctionFee}`;
-                    calculatorCost.getElementsByClassName('total-cost_value')[0].innerText = `$ ${totalCost}`;
+                    calculatorCost.getElementsByClassName('total-cost_value')[0].innerText = `$ ${totalCost - 59}`;
                 }
                 function validate(evt) {
                     var theEvent = evt || window.event;
@@ -864,7 +975,7 @@
                 const calculatorDelivery = document.getElementById('calc-delivery');
                 const citySelect = document.getElementById('departure-city');
                 const portSelect = document.getElementById('departure-port');
-    
+                let deliveryCost = 0;
                 function loadOptionToSelect() {
                     for (let i = 0; i < citiesAndPorts.length; i += 1) {
                         const opt = document.createElement('option');
@@ -904,6 +1015,8 @@
                     portSelect.innerHTML = '';
                 }
                 function setTotalCost(cost) {
+                    deliveryCost = cost;
+                    calcMainCost();
                     calculatorDelivery.getElementsByClassName('total-cost_value')[0].innerText = `$ ${cost}`;
                 }
                 const citiesAndPorts = [
