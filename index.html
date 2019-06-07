@@ -339,6 +339,7 @@
                 color: #FFFFFF;
                 outline: none;
                 cursor: pointer;
+                padding: 0;
             }
             .hidden {
                 display: none;
@@ -410,7 +411,21 @@
                 .calculators .calculator {
                     margin-left: 0px;
                     margin-right: 0px;
-                    padding: 25px 15px 14px 15px
+                    padding: 25px 15px 14px 15px;
+                }
+                #all-cost {
+                    padding: 25px 15px 14px 15px;
+                }
+                #all-cost .all-cost_title span:first-child {
+                    font-size: 22px;
+                    text-align: left;
+                }
+                #all-cost .all-cost_title span:last-child {
+                    text-align: left;
+                }
+                .calculator-row .motor-size,
+                .calculator-row .car-cost {
+                    padding-left: 10px;
                 }
             }
             @media (max-width: 380px) {
@@ -552,7 +567,7 @@
 
             function calcMainCost() {
                 const mainCost = Number(costCalc1) + Number(deliveryCost);
-                document.getElementById('main-cost').innerHTML = `$ ${mainCost}`;
+                document.getElementById('main-cost').innerHTML = `$ ${Math.round(mainCost)}`;
             }
 
             carCostElem.onkeypress = function(event) {
@@ -605,7 +620,7 @@
             }
             function setCarCost(val) {
                 carCost = val + 400;
-                carCostElem.value = `${carCost} $`;
+                carCostElem.value = `${Math.round(carCost)} $`;
             }
             function setAgeRatio(value) {
                 ageRatioVal = value;
@@ -664,7 +679,7 @@
                 } else {
                     const data = JSON.parse(xhr.responseText);
                     document.getElementById('currentExchange').innerHTML 
-                    = `Курс на ${getDateInFormat()} - <b>${parseFloat(data[0].buy).toFixed(2)}</b>`;
+                    = `Курс на ${getDateInFormat()} - <b>${parseFloat(data[0].sale).toFixed(2)}</b>`;
                 }
                 function getDateInFormat() {
                     const todayDate = new Date();
@@ -728,7 +743,7 @@
                     } else {
                         auctionFee = getFeeAmount(finalBat) + getBetInRealTime(finalBat) + constant;
                     }
-                    const totalCost = portOdessa + griznes + auctionFee;
+                    const totalCost = Number(finalBat) + portOdessa + griznes + auctionFee;
                     costCalc1 = totalCost;
                     updateInfo(auctionFee, totalCost);
                     setCarCost(totalCost);
@@ -738,10 +753,8 @@
                     validate(event);
                 }
                 function updateInfo(auctionFee, totalCost) {
-                    let fee = 0;
-                    fee = (auctionFee !== 0) ? auctionFee - constant : 0;
-                    calculatorCost.getElementsByClassName('auction')[0].innerText = `$ ${fee}`;
-                    calculatorCost.getElementsByClassName('total-cost_value')[0].innerText = `$ ${totalCost}`;
+                    calculatorCost.getElementsByClassName('auction')[0].innerText = `$ ${Math.round(auctionFee)}`;
+                    calculatorCost.getElementsByClassName('total-cost_value')[0].innerText = `$ ${Math.round(totalCost)}`;
                 }
                 function validate(evt) {
                     var theEvent = evt || window.event;
@@ -874,16 +887,16 @@
                         feeAmount: 300,
                     }, {
                         min: 2000.00,
-                        max: 1399.99,
+                        max: 2399.99,
                         feeAmount: 325,
     
                     }, {
                         min: 2400.00,
-                        max: 1499.99,
+                        max: 2499.99,
                         feeAmount: 335,
                     }, {
                         min: 2500.00,
-                        max: 1999.99,
+                        max: 2999.99,
                         feeAmount: 350,
                     }, {
                         min: 3000.00,
