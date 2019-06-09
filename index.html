@@ -545,9 +545,9 @@
         <div id="all-cost">
             <div class="all-cost_title">
                 <span>Всего, цена с доставкой</span>
-                <span>* Без учета растаможки</span>
+                <span>Для получения общей суммы, внесите данные в Таможенный калькулятор и нажмиет "Расчитать"</span>
             </div>
-            <span id="main-cost">$ 6 000</span>
+            <span id="main-cost">$ 0</span>
         </div>
         <script>
             const calcCustoms = document.getElementById('calc-сustoms');
@@ -566,7 +566,7 @@
             let allCustomCost = 0;
 
             function calcMainCost() {
-                const mainCost = Number(costCalc1) + Number(deliveryCost);
+                const mainCost = Number(costCalc1) + Number(deliveryCost) + Number(allCustomCost);
                 document.getElementById('main-cost').innerHTML = `$ ${Math.round(mainCost)}`;
             }
 
@@ -711,6 +711,7 @@
             }
             function setAllCost(val) {
                 allCustomCost = val;
+                calcMainCost();
                 calcCustoms.getElementsByClassName('total-cost_value')[0].innerText = `$ ${Math.round(allCustomCost)}`;
             }
         </script>
@@ -746,8 +747,7 @@
                     const totalCost = Number(finalBat) + portOdessa + griznes + auctionFee;
                     costCalc1 = totalCost;
                     updateInfo(auctionFee, totalCost);
-                    setCarCost(totalCost);
-                    calcMainCost(); 
+                    setCarCost(totalCost - portOdessa - griznes);
                 }
                 finalBetInput.onkeypress = function(event) {
                     validate(event);
@@ -1036,7 +1036,6 @@
                 }
                 function setTotalCost(cost) {
                     deliveryCost = cost;
-                    calcMainCost();
                     calculatorDelivery.getElementsByClassName('total-cost_value')[0].innerText = `$ ${cost}`;
                 }
                 const citiesAndPorts = [
